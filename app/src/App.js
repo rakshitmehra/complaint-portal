@@ -14,9 +14,7 @@ function App() {
     setBookId(id);
   };
   return (
-      function MyApp({ Component, pageProps }) {
     <>
-      <Component {...pageProps} />
       <Navbar bg="dark" variant="dark" className="header">
         <Container>
           <Navbar.Brand href="#home">Complaint Portal</Navbar.Brand>
@@ -39,7 +37,6 @@ function App() {
       </Container>
       <Analytics />
     </>
-      }
   );
 }
 
