@@ -3,6 +3,7 @@ import { Container, Navbar, Row, Col } from "react-bootstrap";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import AddBook from "./components/AddBook";
 import BooksList from "./components/BooksList";
+import { Analytics } from '@vercel/analytics/react';
 import "./App.css";
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
     setBookId(id);
   };
   return (
+      function MyApp({ Component, pageProps }) {
     <>
+      <Component {...pageProps} />
       <Navbar bg="dark" variant="dark" className="header">
         <Container>
           <Navbar.Brand href="#home">Complaint Portal</Navbar.Brand>
@@ -34,7 +37,9 @@ function App() {
           </Col>
         </Row>
       </Container>
+      <Analytics />
     </>
+      }
   );
 }
 
