@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Form, Alert, InputGroup, Button, ButtonGroup } from "react-bootstrap";
+import { useNavigate, useParams } from 'react-router-dom';
 import BookDataService from "../services/book.services";
 
-const AddBook = ({ id, setBookId }) => {
+const AddBook = ({ setBookId }) => {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [complaint, setComplaint] = useState("");
   const [phone, setPhone] = useState("");
-  const [status, setStatus] = useState("Available");
+  const [address, setAddress] = useState("");
+  const [product, setProduct] = useState("");
+  const [serialno, setSerialno] = useState("");
+  const [nature, setNature] = useState("");
+  const [status, setStatus] = useState("Issue Not Resolved");
   const [flag, setFlag] = useState(true);
   const [message, setMessage] = useState({ error: false, msg: "" });
 
@@ -15,7 +22,7 @@ const AddBook = ({ id, setBookId }) => {
     e.preventDefault();
     setMessage({ error: false, msg: "" }); // Clear previous message
 
-    if (title === "" || author === "" || complaint === "" || phone === "") {
+    if (title === "" || author === "" || complaint === "" || phone === "" || product === "" || serialno === "" || nature === "") {
       setMessage({ error: true, msg: "All fields are mandatory!" });
       return;
     }
@@ -25,6 +32,10 @@ const AddBook = ({ id, setBookId }) => {
       author,
       complaint,
       phone,
+      address,
+      product,
+      serialno,
+      nature,
       status,
     };
 
@@ -46,6 +57,10 @@ const AddBook = ({ id, setBookId }) => {
     setAuthor("");
     setPhone("");
     setComplaint("");
+    setAddress("");
+    setProduct("");
+    setSerialno("");
+    setNature("");
   };
 
   const editHandler = async () => {
@@ -58,6 +73,10 @@ const AddBook = ({ id, setBookId }) => {
       setAuthor(bookData.author);
       setComplaint(bookData.complaint);
       setPhone(bookData.phone);
+      setAddress(bookData.address);
+      setProduct(bookData.product);
+      setSerialno(bookData.serialno);
+      setNature(bookData.nature);
       setStatus(bookData.status);
     } catch (err) {
       setMessage({ error: true, msg: err.message });
@@ -96,7 +115,7 @@ const AddBook = ({ id, setBookId }) => {
 
         <Form.Group className="mb-3" controlId="formBookTitle">
           <InputGroup>
-            <InputGroup.Text id="formBookTitle">Customer Name</InputGroup.Text>
+            <InputGroup.Text id="formBookTitle">Contact Person</InputGroup.Text>
             <Form.Control
               type="text"
               placeholder="Name"
@@ -130,6 +149,54 @@ const AddBook = ({ id, setBookId }) => {
           </InputGroup>
         </Form.Group>
 
+        <Form.Group className="mb-3" controlId="formAddress">
+          <InputGroup>
+            <InputGroup.Text id="formAddress">Address</InputGroup.Text>
+            <Form.Control
+              type="text"
+              placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </InputGroup>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formProduct">
+          <InputGroup>
+            <InputGroup.Text id="formProduct">Product</InputGroup.Text>
+            <Form.Control
+              type="text"
+              placeholder="Product Name"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+            />
+          </InputGroup>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formSerialNo">
+          <InputGroup>
+            <InputGroup.Text id="formSerialNo">Serial Number</InputGroup.Text>
+            <Form.Control
+              type="text"
+              placeholder="Serial Number"
+              value={serialno}
+              onChange={(e) => setSerialno(e.target.value)}
+            />
+          </InputGroup>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formNature">
+          <InputGroup>
+            <InputGroup.Text id="formNature">Nature Of Complaint</InputGroup.Text>
+            <Form.Control
+              type="text"
+              placeholder="Reason"
+              value={nature}
+              onChange={(e) => setNature(e.target.value)}
+            />
+          </InputGroup>
+        </Form.Group>
+
         <ButtonGroup aria-label="Basic example" className="mb-3">
           <Button
             disabled={flag}
@@ -139,7 +206,7 @@ const AddBook = ({ id, setBookId }) => {
               setFlag(true);
             }}
           >
-            Issue Solved
+            Issue Resolved
           </Button>
           <Button
             variant="danger"
@@ -149,7 +216,7 @@ const AddBook = ({ id, setBookId }) => {
               setFlag(false);
             }}
           >
-            Issue Not Solved
+            Issue Not Resolved
           </Button>
         </ButtonGroup>
         <div className="d-grid gap-2">
