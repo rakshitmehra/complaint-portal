@@ -12,9 +12,12 @@ const BooksList = ({ getBookId }) => {
   }, []);
 
   const getBooks = async () => {
-    const data = await BookDataService.getAllBooks();
-    console.log(data.docs);
-    setBooks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    try {
+      const data = await BookDataService.getAllBooks();
+      setBooks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
   };
 
   const deleteHandler = async (id) => {
@@ -32,18 +35,24 @@ const BooksList = ({ getBookId }) => {
   };
 
   // Filter books based on search query
-  const filteredBooks = books.filter(
-    (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.complaint.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.status.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredBooks = books.filter((book) => {
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    return (
+      (book.title && book.title.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.author && book.author.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.phone && book.phone.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.address && book.address.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.product && book.product.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.serialno && book.serialno.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.nature && book.nature.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.assign && book.assign.toLowerCase().includes(lowerSearchQuery)) ||
+      (book.status && book.status.toLowerCase().includes(lowerSearchQuery))
+    );
+  });
+  
   return (
     <>
-
-      <Link to="/" className="edit" style={{
+      <Link to="" className="edit" style={{
                         textDecoration: 'none',
                         color: 'blue',
                         fontWeight: 'bold',
@@ -51,10 +60,9 @@ const BooksList = ({ getBookId }) => {
                         fontSize: '23px',
                         padding: '15px',
                       }} >
-              Add New Complaint
+            Action Page
       </Link>
-
-      <SearchBar handleSearch={handleSearch} />
+      <SearchBar handleSearch={handleSearch}/>
 
       <div className="mb-2">
         <Button variant="dark edit" onClick={getBooks}>
@@ -74,25 +82,36 @@ const BooksList = ({ getBookId }) => {
             <th>Product</th>
             <th>Serial Number</th>
             <th>Nature of Complaint</th>
+            <th>Assign To</th>
             <th>Status</th>
             <th>Action</th>            
           </tr>
         </thead>
         <tbody>
-          {filteredBooks.map((doc, index) => (
-            <tr key={doc.id}>
+          {filteredBooks.map((book, index) => (
+            <tr key={book.id}>
               <td>{index + 1}</td>
-              <td>{doc.author}</td>
-              <td>{doc.title}</td>
-              <td>{doc.complaint}</td>
-              <td>{doc.phone}</td>
-              <td>{doc.address}</td>
-              <td>{doc.product}</td>
-              <td>{doc.serialno}</td>
-              <td>{doc.nature}</td>
-              <td>{doc.status}</td>
+              <td>{book.author}</td>
+              <td>{book.title}</td>
+              <td>{index + 202301}</td>
+              <td>{book.phone}</td>
+              <td>{book.address}</td>
+              <td>{book.product}</td>
+              <td>{book.serialno}</td>
+              <td>{book.nature}</td>
+              <td>{book.assign}</td>
               <td>
-                <Link className="edit" variant="secondary" to={`/edit-complaint/${doc.id}`}  style={{
+              <span
+                style={{
+                  color: book.status === "Issue Resolved" ? "green" : "red",
+                  fontWeight: "bold",
+                }}
+              >
+                {book.status}
+              </span> 
+              </td>
+              <td>
+                <Link className="edit" variant="secondary" to={`/edit-complaint/${book.id}`}  style={{
                   textDecoration: 'none',
                   color: 'blue',
                   fontWeight: 'bold',
@@ -100,13 +119,13 @@ const BooksList = ({ getBookId }) => {
                 }}>
                 Edit
                 </Link>
-                <Button
+                {/* <Button
                   variant="danger"
                   className="delete"
-                  onClick={() => deleteHandler(doc.id)}
+                  onClick={() => deleteHandler(book.id)}
                 >
                   Delete
-                </Button>
+                </Button> */}
               </td>
             </tr>
           ))}
